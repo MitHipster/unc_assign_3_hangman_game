@@ -1,0 +1,68 @@
+/* Fonts Styles
+   -------------------- */
+
+@font-face {
+  font-family: 'dk_crayon_crumbleregular';
+  src: url('../fonts/dk_crayon_crumble-webfont.woff2') format('woff2'),
+       url('../fonts/dk_crayon_crumble-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* Base Element Styles
+   -------------------- */
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  min-height: 100vh;
+  font-size: 1rem;
+  line-height: 1.4;
+  color: #d6d6d6;
+  background: url("../img/chalkboard.jpg") no-repeat center center;
+  background-size: cover;
+  background-color: #333;
+}
+
+/* Base Layout Styles
+   -------------------- */
+
+/* Navigation  */
+
+
+
+/* Layout Containers */
+
+
+
+/* Page Elements */
+
+
+
+/* Media Queries
+   -------------------- */
+
+@media only screen and (min-width: 768px) {
+  
+  
+}
+
+/* Helper Classes
+   -------------------- */
+
+.clearfix:before,
+.clearfix:after {
+    content: " ";
+    display: table;
+}
+
+.clearfix:after {
+    clear: both;
+}
+
+.clearfix {
+    *zoom: 1;
+}
+

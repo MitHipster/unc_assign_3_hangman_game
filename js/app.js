@@ -1,7 +1,7 @@
 /*jslint esversion: 6, browser: true*/
 /*global window, console, $, jQuery, alert*/
 
-const wordUl = $('#word');
+const wordEl = $('#word');
 const startBtn = $('#start-btn');
 const mathTerms = [
   ["absolute value", "The magnitude of a number. It is the number with the sign (+ or -) removed and is symbolised using two vertical straight lines."],
@@ -97,9 +97,9 @@ let letterBlocks = function (word) {
   game.letters = word.split('');
   $.each(game.letters, function (i, letter) {
     if ($.trim(letter).length !== 0) {
-      wordUl.append(`<li class="letter" data-letter="${i}">_</li>`);
+      wordEl.append(`<span class="letter" data-letter="${i}">_</span>`);
     } else {
-       wordUl.append('<br>');
+       wordEl.append('<br>');
     }
   });
 };

@@ -27,18 +27,6 @@ body {
   background-color: #333;
 }
 
-ul {
-  display: flex;
-  flex-wrap: wrap;
-  list-style: none;
-}
-
-li {
-  width: 2.5rem;
-  height: 2.5rem;
-  text-align: center;
-}
-
 /* Base Layout Styles
    -------------------- */
 
@@ -52,7 +40,12 @@ li {
 
 /* Page Elements */
 
-
+.letter {
+  display: inline-block;
+  width: 2.5rem;
+  height: 2.5rem;
+  text-align: center;
+}
 
 /* Media Queries
    -------------------- */

@@ -18,12 +18,25 @@
 
 body {
   min-height: 100vh;
-  font-size: 1rem;
+  font-family: 'dk_crayon_crumbleregular', sans-serif;
+  font-size: 2rem;
   line-height: 1.4;
   color: #d6d6d6;
   background: url("../img/chalkboard.jpg") no-repeat center center;
   background-size: cover;
   background-color: #333;
+}
+
+ul {
+  display: flex;
+  flex-wrap: wrap;
+  list-style: none;
+}
+
+li {
+  width: 2.5rem;
+  height: 2.5rem;
+  text-align: center;
 }
 
 /* Base Layout Styles

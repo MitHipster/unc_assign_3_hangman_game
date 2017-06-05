@@ -1,6 +1,8 @@
 /*jslint esversion: 6, browser: true*/
 /*global window, console, $, jQuery, alert*/
 
+const wordUl = $('#word');
+const startBtn = $('#start-btn');
 const mathTerms = [
   ["absolute value", "The magnitude of a number. It is the number with the sign (+ or -) removed and is symbolised using two vertical straight lines."],
   ["acute angle", "An angle with measure less than 90 degrees."],
@@ -80,5 +82,31 @@ let game = {
   wins: 0,
   losses: 0,
   terms: mathTerms,
+  word: "",
+  letters: [],
+  definition: "",
   guesses: []
 };
+
+let randomNumber = function (number) {
+  return Math.floor(Math.random() * number);
+};
+
+let letterBlocks = function (word) {
+  console.log(word);
+  game.letters = word.split('');
+  $.each(game.letters, function (i, letter) {
+    if ($.trim(letter).length !== 0) {
+      wordUl.append(`<li class="letter" data-letter="${i}">_</li>`);
+    } else {
+       wordUl.append('<br>');
+    }
+  });
+};
+
+startBtn.on('click', function () {
+  let i = randomNumber(game.terms.length);
+  game.word = game.terms[i][0];
+  game.definition = game.terms[i][1];
+  letterBlocks(game.word);
+});

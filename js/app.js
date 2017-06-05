@@ -2,6 +2,7 @@
 /*global window, console, $, jQuery, alert*/
 
 const wordEl = $('#word');
+const letterEl = $('.letter');
 const startBtn = $('#start-btn');
 const mathTerms = [
   ["absolute value", "The magnitude of a number. It is the number with the sign (+ or -) removed and is symbolised using two vertical straight lines."],
@@ -51,7 +52,7 @@ const mathTerms = [
   ["matrix", "A matrix is a rectangular table of data."],
   ["multiplication", "The process of finding the product of two quantities that are called the multiplicand and the multiplier."],
   ["numerator", "The top number in a fraction."],
-  ["otuse angle", "An angle with a degree measure between 90 and 180 degrees"],
+  ["obtuse angle", "An angle with a degree measure between 90 and 180 degrees"],
   ["origin", "The point on a graph that represents the point where the x and y axes meet: (x,y) = (0,0)."],
   ["parallel", "Lines or planes that are equidistant from each other and do not intersect."],
   ["perpendicular", "At right angles to a line or plane."],
@@ -83,36 +84,60 @@ let game = {
   losses: 0,
   terms: mathTerms,
   word: "",
-  letters: [],
   definition: "",
-  guesses: []
+  letters: [],
+  misses: [],
+  fn: {
+    letterBlocks: function (word) {
+      console.log(word);
+      game.letters = word.split('');
+      $.each(game.letters, function (i, letter) {
+        if ($.trim(letter).length !== 0) {
+          wordEl.append(`<span class="letter" data-letter="${i}">_</span>`);
+        } else {
+           wordEl.append('<br>');
+        }
+      });
+    },
+    keyPress: function () {
+      $('body').keypress( function (e) {
+        var guess;
+//        console.log(e.which);
+        if ((e.which >= 65 && e.which <= 90) || 
+           (e.which >= 97 && e.which <= 122)) {
+          guess = String.fromCharCode(e.which).toLowerCase();
+//          console.log(guess);
+          game.fn.matchGuess(guess);
+        }
+      });
+    },
+    matchGuess: function (guess) {
+      let matchCounter = 0;
+    //  console.log(game.letters.indexOf(guess));
+      $.each(game.letters, function (i, letter) {
+        if (letter === guess) {
+          matchCounter++;
+          console.log(matchCounter);
+          wordEl.find(`[data-letter="${i}"]`).addClass("match").text(guess);
+        }
+      });
+      if (matchCounter === 0) {
+        game.misses.push(guess);
+      }
+      console.log(matchCounter);
+      console.log(game.misses);
+    }
+  }
 };
 
 let randomNumber = function (number) {
   return Math.floor(Math.random() * number);
 };
 
-let letterBlocks = function (word) {
-  console.log(word);
-  game.letters = word.split('');
-  $.each(game.letters, function (i, letter) {
-    if ($.trim(letter).length !== 0) {
-      wordEl.append(`<span class="letter" data-letter="${i}">_</span>`);
-    } else {
-       wordEl.append('<br>');
-    }
-  });
-};
-
 startBtn.on('click', function () {
   let i = randomNumber(game.terms.length);
   game.word = game.terms[i][0];
   game.definition = game.terms[i][1];
-  letterBlocks(game.word);
-  $('body').keypress( function (e) {
-    console.log(e.which);
-    if (e.which >= 97 && e.which <= 122) {
-      console.log("good to go")
-    }
-  });
+  game.fn.letterBlocks(game.word);
+  game.fn.keyPress();
 });

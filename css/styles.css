@@ -50,6 +50,10 @@ body {
   text-align: center;
 }
 
+.letter.match {
+  color: #a9d3ab;
+}
+
 #start-btn {
   font-family: 'dk_crayon_crumbleregular', sans-serif;
   font-size: 1.25rem;

@@ -14,12 +14,14 @@
 
 * {
   box-sizing: border-box;
+  padding: 0;
+  margin: 0;
 }
 
 body {
   min-height: 100vh;
   font-family: 'dk_crayon_crumbleregular', sans-serif;
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   letter-spacing: 0.2rem;
   line-height: 1.4;
   color: #d6d6d6;
@@ -37,6 +39,10 @@ body {
 
 /* Layout Containers */
 
+.game-container {
+  padding: 0.75rem;
+}
+
 .word-container {
   text-align: center;
 }
@@ -45,13 +51,17 @@ body {
 
 .letter {
   display: inline-block;
-  width: 2rem;
-  height: 2rem;
+  width: 1.25rem;
+  height: 1.5rem;
   text-align: center;
 }
 
-.letter.match {
+.letter.matched {
   color: #a9d3ab;
+}
+
+#incorrect {
+  color: #f58e8e;
 }
 
 #start-btn {
@@ -67,9 +77,28 @@ body {
 /* Media Queries
    -------------------- */
 
-@media only screen and (min-width: 768px) {
+@media screen and (min-width: 400px) {
   
+  body {
+    font-size: 1.5rem;
+  }
   
+  .letter {
+    width: 2rem;
+    height: 2rem;
+  }
+}
+
+@media screen and (min-width: 768px) {
+  
+  body {
+    font-size: 1.5rem;
+  }
+  
+  .letter {
+    width: 2rem;
+    height: 2rem;
+  }
 }
 
 /* Helper Classes

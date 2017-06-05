@@ -2,7 +2,9 @@
 /*global window, console, $, jQuery, alert*/
 
 const wordEl = $('#word');
-const letterEl = $('.letter');
+const incorrectEl = $('#incorrect');
+const letterCl = $('.letter');
+const matchedCl = $('.matched');
 const startBtn = $('#start-btn');
 const mathTerms = [
   ["absolute value", "The magnitude of a number. It is the number with the sign (+ or -) removed and is symbolised using two vertical straight lines."],
@@ -82,11 +84,16 @@ const mathTerms = [
 let game = {
   wins: 0,
   losses: 0,
+  gameOver: false,
   terms: mathTerms,
   word: "",
   definition: "",
   letters: [],
-  misses: [],
+  letterCount: 0,
+  matched: [],
+  matchedCount: 0,
+  incorrect: [],
+  incorrectCount: 0,
   fn: {
     letterBlocks: function (word) {
       console.log(word);
@@ -94,6 +101,7 @@ let game = {
       $.each(game.letters, function (i, letter) {
         if ($.trim(letter).length !== 0) {
           wordEl.append(`<span class="letter" data-letter="${i}">_</span>`);
+          game.letterCount++;
         } else {
            wordEl.append('<br>');
         }
@@ -102,30 +110,39 @@ let game = {
     keyPress: function () {
       $('body').keypress( function (e) {
         var guess;
-//        console.log(e.which);
         if ((e.which >= 65 && e.which <= 90) || 
            (e.which >= 97 && e.which <= 122)) {
           guess = String.fromCharCode(e.which).toLowerCase();
-//          console.log(guess);
-          game.fn.matchGuess(guess);
+          game.fn.checkGuess(guess);
         }
       });
     },
-    matchGuess: function (guess) {
-      let matchCounter = 0;
-    //  console.log(game.letters.indexOf(guess));
+    checkGuess: function (guess) {
+      let counter = 0;
       $.each(game.letters, function (i, letter) {
-        if (letter === guess) {
-          matchCounter++;
-          console.log(matchCounter);
-          wordEl.find(`[data-letter="${i}"]`).addClass("match").text(guess);
+        if (letter === guess && game.matched.indexOf(guess) === -1) {
+          counter++;
+          wordEl.find(`[data-letter="${i}"]`).addClass("matched").text(guess);
+        } else if (game.matched.indexOf(guess) !== -1) {
+          counter = -1;
         }
       });
-      if (matchCounter === 0) {
-        game.misses.push(guess);
+      if (counter > 0) {
+        game.fn.updateMatched(counter, guess);
+      } else if (counter === 0 && game.incorrect.indexOf(guess) === -1) {
+        game.fn.updateIncorrect(guess);
       }
-      console.log(matchCounter);
-      console.log(game.misses);
+    },
+    updateMatched: function (counter, guess) {
+      game.matched.push(guess);
+      game.matchedCount += counter;
+    },
+    updateIncorrect: function (guess) {
+      game.incorrect.push(guess);
+      game.incorrectCount += 1;
+      let incorrectSort = game.incorrect.sort();
+      incorrectSort = incorrectSort.toString().replace(/,/g , ' ');
+      incorrectEl.text(incorrectSort);
     }
   }
 };

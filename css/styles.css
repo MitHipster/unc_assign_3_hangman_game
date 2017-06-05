@@ -19,7 +19,8 @@
 body {
   min-height: 100vh;
   font-family: 'dk_crayon_crumbleregular', sans-serif;
-  font-size: 2rem;
+  font-size: 1.5rem;
+  letter-spacing: 0.2rem;
   line-height: 1.4;
   color: #d6d6d6;
   background: url("../img/chalkboard.jpg") no-repeat center center;
@@ -36,15 +37,27 @@ body {
 
 /* Layout Containers */
 
-
+.word-container {
+  text-align: center;
+}
 
 /* Page Elements */
 
 .letter {
   display: inline-block;
-  width: 2.5rem;
-  height: 2.5rem;
+  width: 2rem;
+  height: 2rem;
   text-align: center;
+}
+
+#start-btn {
+  font-family: 'dk_crayon_crumbleregular', sans-serif;
+  font-size: 1.25rem;
+  letter-spacing: 0.2rem;
+  color: #a9d3ab;
+  background-color: transparent;
+  padding: 5px 10px;
+  border: 1px solid #d6d6d6;
 }
 
 /* Media Queries

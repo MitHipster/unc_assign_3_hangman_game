@@ -109,4 +109,10 @@ startBtn.on('click', function () {
   game.word = game.terms[i][0];
   game.definition = game.terms[i][1];
   letterBlocks(game.word);
+  $('body').keypress( function (e) {
+    console.log(e.which);
+    if (e.which >= 97 && e.which <= 122) {
+      console.log("good to go")
+    }
+  });
 });

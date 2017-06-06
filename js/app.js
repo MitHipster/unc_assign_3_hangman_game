@@ -1,5 +1,5 @@
 /*jslint esversion: 6, browser: true*/
-/*global window, console, $, jQuery, alert*/
+/*global window, console, $, jQuery, this, alert*/
 
 const wordId = $('#word');
 const incorrectId = $('#incorrect');
@@ -10,6 +10,7 @@ const playedId = $('#played');
 const winsId = $('#wins');
 const lossesId = $('#losses');
 const equationId = $('#equation');
+const dataShowAttr = $('[data-show]');
 const startBtn = $('#start-btn');
 const mathTerms = [
   ["absolute value", "The magnitude of a number. It is the number with the sign (+ or -) removed and is symbolised using two vertical straight lines."],
@@ -170,6 +171,16 @@ let game = {
       game.played += 1;
       id.text(game[outcome]);
       playedId.text(game.played);
+    },
+    gameReset: function () {
+      wordId.empty();
+      incorrectId.empty();
+      dataShowAttr.css("visibility", "hidden");
+      game.letterCount = 0;
+      game.matched = [];
+      game.matchedCount = 0;
+      game.incorrect = [];
+      game.incorrectCount = 0;
     }
   }
 };
@@ -186,7 +197,7 @@ startBtn.on('click', function () {
   game.word = game.terms[i][0];
   game.definition = game.terms[i][1];
   game.terms.splice(i, 1);
-  console.log(game.terms.length + " " + mathTerms.length)
+  game.fn.gameReset();
   game.fn.letterBlocks(game.word);
   game.fn.keyPress();
 });

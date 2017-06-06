@@ -14,8 +14,7 @@
 
 * {
   box-sizing: border-box;
-  padding: 0;
-  margin: 0;
+  
 }
 
 body {
@@ -28,6 +27,17 @@ body {
   background: url("../img/chalkboard.jpg") no-repeat center center;
   background-size: cover;
   background-color: #333;
+}
+
+header {
+  background-color: rgba(214, 214, 214, 0.1);
+  color: #7aabd4;
+  padding: 0.75rem;
+}
+
+h2, p {
+  padding: 0;
+  margin: 0;
 }
 
 /* Base Layout Styles
@@ -43,11 +53,22 @@ body {
   padding: 0.75rem;
 }
 
-.word-container {
+.word-container,
+.incorrect-container,
+.equation-container {
   text-align: center;
 }
 
 /* Page Elements */
+
+#equation {
+  font-size: 0;
+}
+
+#equation span {
+  font-size: 1.25rem;
+  letter-spacing: 0;
+}
 
 .letter {
   display: inline-block;

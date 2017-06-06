@@ -9,6 +9,7 @@ const puzzlesId = $('#puzzles');
 const playedId = $('#played');
 const winsId = $('#wins');
 const lossesId = $('#losses');
+const equationId = $('#equation');
 const startBtn = $('#start-btn');
 const mathTerms = [
   ["absolute value", "The magnitude of a number. It is the number with the sign (+ or -) removed and is symbolised using two vertical straight lines."],
@@ -117,8 +118,9 @@ let game = {
     keyPress: function () {
       $('body').keypress( function (e) {
         var guess;
-        if ((e.which >= 65 && e.which <= 90) || 
-           (e.which >= 97 && e.which <= 122)) {
+        if ((!game.gameOver) &&
+           ((e.which >= 65 && e.which <= 90) || 
+           (e.which >= 97 && e.which <= 122))) {
           guess = String.fromCharCode(e.which).toLowerCase();
           game.fn.checkGuess(guess);
         }
@@ -151,6 +153,7 @@ let game = {
       let incorrectSort = game.incorrect.sort();
       incorrectSort = incorrectSort.toString().replace(/,/g , ' ');
       incorrectId.text(incorrectSort);
+      equationId.find(`[data-show="${game.incorrectCount}"]`).css("visibility", "visible");
       game.fn.isGameOver('lost');
     },
     isGameOver: function (check) {
@@ -182,6 +185,8 @@ startBtn.on('click', function () {
   let i = randomNumber(game.terms.length);
   game.word = game.terms[i][0];
   game.definition = game.terms[i][1];
+  game.terms.splice(i, 1);
+  console.log(game.terms.length + " " + mathTerms.length)
   game.fn.letterBlocks(game.word);
   game.fn.keyPress();
 });

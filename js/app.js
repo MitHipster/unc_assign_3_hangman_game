@@ -1,10 +1,14 @@
 /*jslint esversion: 6, browser: true*/
 /*global window, console, $, jQuery, alert*/
 
-const wordEl = $('#word');
-const incorrectEl = $('#incorrect');
+const wordId = $('#word');
+const incorrectId = $('#incorrect');
 const letterCl = $('.letter');
 const matchedCl = $('.matched');
+const puzzlesId = $('#puzzles');
+const playedId = $('#played');
+const winsId = $('#wins');
+const lossesId = $('#losses');
 const startBtn = $('#start-btn');
 const mathTerms = [
   ["absolute value", "The magnitude of a number. It is the number with the sign (+ or -) removed and is symbolised using two vertical straight lines."],
@@ -84,6 +88,8 @@ const mathTerms = [
 let game = {
   wins: 0,
   losses: 0,
+  puzzles: mathTerms.length,
+  played: 0,
   gameOver: false,
   terms: mathTerms,
   word: "",
@@ -94,16 +100,17 @@ let game = {
   matchedCount: 0,
   incorrect: [],
   incorrectCount: 0,
+  incorrectMax: 8,
   fn: {
     letterBlocks: function (word) {
       console.log(word);
       game.letters = word.split('');
       $.each(game.letters, function (i, letter) {
         if ($.trim(letter).length !== 0) {
-          wordEl.append(`<span class="letter" data-letter="${i}">_</span>`);
+          wordId.append(`<span class="letter" data-letter="${i}">_</span>`);
           game.letterCount++;
         } else {
-           wordEl.append('<br>');
+           wordId.append('<br>');
         }
       });
     },
@@ -122,7 +129,7 @@ let game = {
       $.each(game.letters, function (i, letter) {
         if (letter === guess && game.matched.indexOf(guess) === -1) {
           counter++;
-          wordEl.find(`[data-letter="${i}"]`).addClass("matched").text(guess);
+          wordId.find(`[data-letter="${i}"]`).addClass("matched").text(guess);
         } else if (game.matched.indexOf(guess) !== -1) {
           counter = -1;
         }
@@ -136,22 +143,42 @@ let game = {
     updateMatched: function (counter, guess) {
       game.matched.push(guess);
       game.matchedCount += counter;
+      game.fn.isGameOver('won');
     },
     updateIncorrect: function (guess) {
       game.incorrect.push(guess);
       game.incorrectCount += 1;
       let incorrectSort = game.incorrect.sort();
       incorrectSort = incorrectSort.toString().replace(/,/g , ' ');
-      incorrectEl.text(incorrectSort);
+      incorrectId.text(incorrectSort);
+      game.fn.isGameOver('lost');
+    },
+    isGameOver: function (check) {
+      if (check === 'won' && game.matchedCount === game.letterCount) {        
+        game.gameOver = true;
+        game.fn.updateStats('wins', winsId);
+      } else if (check === 'lost' && game.incorrectCount === game.incorrectMax) {
+        game.gameOver = true;
+        game.fn.updateStats('losses', lossesId);
+      }
+    },
+    updateStats: function (outcome, id) {
+      game[outcome] += 1;
+      game.played += 1;
+      id.text(game[outcome]);
+      playedId.text(game.played);
     }
   }
 };
+
+puzzlesId.text(game.puzzles);
 
 let randomNumber = function (number) {
   return Math.floor(Math.random() * number);
 };
 
 startBtn.on('click', function () {
+  game.gameOver = false;
   let i = randomNumber(game.terms.length);
   game.word = game.terms[i][0];
   game.definition = game.terms[i][1];

@@ -22,7 +22,7 @@ const mathTerms = [
   ["binary operation", "An operation that is performed on just two elements of a set at a time."],
   ["butterfly effect", "In a system when a small change results in an unpredictable and disproportionate disturbance."],
   ["calculus", "Branch of mathematics concerned with rates of change, gradients of curves, maximum and minimum values of functions, and the calculation of lengths, areas and volumes."],
-  ["chaos", "Apparent randomness whose origins are entirely deterministic. A state of disorder and irregularity whose evolution in time, though governed by simple exact laws, is highly sensitive to starting conditions: a small variation in these conditions will produce wildly different results, so that long-term behaviour of chaotic systems cannot be predicted."],
+  ["chaos", "Apparent randomness whose origins are entirely deterministic. A state of disorder and irregularity whose evolution in time, though governed by simple exact laws, is highly sensitive to starting conditions."],
   ["chord", "A straight line joining two points on a curve or a circle."],
   ["coefficient", "A number or letter before a variable in an algebraic expression that is used as a multiplier."],
   ["common denominator", "A denominator that is common to all fractions within an equation."],
@@ -129,6 +129,9 @@ let game = {
           guess = String.fromCharCode(e.which).toLowerCase();
           // Call checkGuess function and pass the guessed letter
           game.fn.checkGuess(guess);
+        } else if (e.which === 32) {
+          e.stopPropagation();
+          e.preventDefault();
         }
       });
     },
@@ -239,17 +242,29 @@ let randomNumber = function (number) {
 startBtn.on('click', function () {
   // Reset game over to false
   game.gameOver = false;
-  // Get random value based on the number of puzzles left
-  let i = randomNumber(game.terms.length);
-  // Get and assign word and definition to the game object
-  game.word = game.terms[i][0];
-  game.definition = game.terms[i][1];
-  // Remove puzzle from object array
-  game.terms.splice(i, 1);
-  // Call function to reset game
-  game.fn.gameReset();
-  // Call function to generate the puzzle's letter blocks
-  game.fn.letterBlocks(game.word);
-  // Call function to bind keypress event to body element
-  game.fn.keyPress();
+  // Get random value based on the number of puzzles left unless puzzles left equal zero
+  if (game.terms.length !== 0) {
+    let i = randomNumber(game.terms.length);
+    // Get and assign word and definition to the game object
+    game.word = game.terms[i][0];
+    game.definition = game.terms[i][1];
+    // Remove puzzle from object array
+    game.terms.splice(i, 1);
+    // Call function to reset game
+    game.fn.gameReset();
+    // Call function to generate the puzzle's letter blocks
+    game.fn.letterBlocks(game.word);
+    // Call function to bind keypress event to body element
+    game.fn.keyPress();
+  // If unplayed puzzle count is zero, display message below
+  } else {
+    definitionId.text("No More Puzzles. Thank you for playing.");
+  }
+});
+
+// Keyup event to stop a new puzzle from loading when new game button is in focus and spacebar is accidently pressed
+$('body').keyup( function (e) {
+  if(e.which === 32) {
+  	e.preventDefault();
+  }
 });

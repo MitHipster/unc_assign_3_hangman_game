@@ -1,18 +1,16 @@
 /*jslint esversion: 6, browser: true*/
 /*global window, console, $, jQuery, this, alert*/
 
-const wordId = $('#word');
-const definitionId = $('#definition');
-const incorrectId = $('#incorrect');
-const letterCl = $('.letter');
-const matchedCl = $('.matched');
-const puzzlesId = $('#puzzles');
-const playedId = $('#played');
-const winsId = $('#wins');
-const lossesId = $('#losses');
-const equationId = $('#equation');
-const dataShowAttr = $('[data-show]');
-const startBtn = $('#start-btn');
+const wordId = $('#word'); // p element that holds the letter blocks
+const definitionId = $('#definition'); // p element that displays definition at game's end
+const incorrectId = $('#incorrect'); // p element that shows player's incorrect guesses
+const puzzlesId = $('#puzzles'); // Displays total puzzle count
+const playedId = $('#played'); // Displays games played 
+const winsId = $('#wins'); // Displays games won
+const lossesId = $('#losses'); // Displays games lost
+const equationId = $('#equation'); // p element for quadratic equation used to track the number of incorrect guesses
+const dataShowAttr = $('[data-show]'); // Used to re-hide any visible parts of the equation. Equation is the equivalent of a hangman
+const startBtn = $('#start-btn'); // Button used to start a new game
 const mathTerms = [
   ["absolute value", "The magnitude of a number. It is the number with the sign (+ or -) removed and is symbolised using two vertical straight lines."],
   ["acute angle", "An angle with measure less than 90 degrees."],
@@ -86,28 +84,31 @@ const mathTerms = [
   ["variable", "An amount whose value can change."],
   ["vertex", "The point where lines intersect."],
   ["whole number", "Zero or any positive number with no fractional parts."]
-];
+]; // Array of puzzles
 
+// Game object with functions
 let game = {
   wins: 0,
   losses: 0,
   puzzles: mathTerms.length,
   played: 0,
-  gameOver: false,
+  gameOver: false, // Condition used to ignore keypress after game finishes
   terms: mathTerms,
   word: "",
   definition: "",
-  letters: [], 
+  letters: [], // Array of puzzle letters
   letterCount: 0,
-  matched: [],
+  matched: [], // Array of matched letters
   matchedCount: 0,
-  incorrect: [],
+  incorrect: [], // Array of incorrect guesses
   incorrectCount: 0,
-  incorrectMax: 8,
+  incorrectMax: 8, // Max number of incorrect guess allowed
   fn: {
+    // Function to create and append blocks for each letter in the puzzle. Line break added for two-word puzzles
     letterBlocks: function (word) {
-      console.log(word);
+      // Split word string into an array of letters
       game.letters = word.split('');
+      // Iterate through letters array to create a span for each letter or a break for a space between words.
       $.each(game.letters, function (i, letter) {
         if ($.trim(letter).length !== 0) {
           wordId.append(`<span class="letter" data-letter="${i}">_</span>`);
@@ -117,71 +118,106 @@ let game = {
         }
       });
     },
+    // Function to bind the keypress event listener to the body element
     keyPress: function () {
       $('body').keypress( function (e) {
         var guess;
+        // If game not over and keycode represents a-z or A-Z, convert code to lower case letter equivalent
         if ((!game.gameOver) &&
            ((e.which >= 65 && e.which <= 90) || 
            (e.which >= 97 && e.which <= 122))) {
           guess = String.fromCharCode(e.which).toLowerCase();
+          // Call checkGuess function and pass the guessed letter
           game.fn.checkGuess(guess);
         }
       });
     },
+    // Function to see if the guessed letter is found in the letters array
     checkGuess: function (guess) {
       let counter = 0;
+      // Compare guess to each letter in the array unless it's found in the matched array (meaning played selected same letter more than once)
       $.each(game.letters, function (i, letter) {
         if (letter === guess && game.matched.indexOf(guess) === -1) {
+          // Count the number of letters matched
           counter++;
+          // Use data attribute and array index to find span in DOM then add matched class (for styling) and replace dash with matched letter
           wordId.find(`[data-letter="${i}"]`).addClass("matched").text(guess);
+          // If letter is a repeat, meaning it already exits in the matched array, set counter to -1, essentially ignoring it
         } else if (game.matched.indexOf(guess) !== -1) {
           counter = -1;
         }
       });
+      // If match is found, call updateMatched function passing counter and guess values
       if (counter > 0) {
         game.fn.updateMatched(counter, guess);
+      // Else if no match is found and the incorrect guess is not a repeat, call updateIncorrect passing guess value
       } else if (counter === 0 && game.incorrect.indexOf(guess) === -1) {
         game.fn.updateIncorrect(guess);
       }
     },
+    // Function to update the matched array with correct guess and increment matchedCount by the counter value
     updateMatched: function (counter, guess) {
       game.matched.push(guess);
       game.matchedCount += counter;
+      // Call isGameOver function with won argument to see if matched guess resulted in a win
       game.fn.isGameOver('won');
     },
+    // Function to update the incorrect array with incorrect guess and increment incorrectCount by 1
     updateIncorrect: function (guess) {
       game.incorrect.push(guess);
       game.incorrectCount += 1;
+      // Sort incorrect array alphabetically, convert to string, and replace commas with spaces
       let incorrectSort = game.incorrect.sort();
       incorrectSort = incorrectSort.toString().replace(/,/g , ' ');
+      // Update text in element with new incorrect string
       incorrectId.text(incorrectSort);
-      equationId.find(`[data-show="${game.incorrectCount}"]`).css("visibility", "visible");
+      // Call changeEquation function
+      game.fn.changeEquation();
+      // Call isGameOver function with lost argument to see if incorrect guess resulted in a loss
       game.fn.isGameOver('lost');
     },
+    // Function to show next part of the equation. Player losses if equation is completed
+    changeEquation: function () {
+      // Use data attribute and incorrect count as index to find span in DOM then change visibility setting to visible
+      equationId.find(`[data-show="${game.incorrectCount}"]`).css("visibility", "visible");
+    },
+    // Function to see if game is over after each correct or incorrect guess
     isGameOver: function (check) {
-      if (check === 'won' && game.matchedCount === game.letterCount) {        
+      // If matchedCount equals letterCount, game is won. Change gameOver to true and call showDefinition and updateStats functions
+      if (check === 'won' && game.matchedCount === game.letterCount) {
         game.gameOver = true;
+        game.fn.showDefinition();
         game.fn.updateStats('wins', winsId);
+      // If incorrectCount equals incorrectMax, game is lost. Change gameOver to true and call showDefinition and updateStats functions
       } else if (check === 'lost' && game.incorrectCount === game.incorrectMax) {
         game.gameOver = true;
+        game.fn.showDefinition();
         game.fn.updateStats('losses', lossesId);
       }
     },
+    // Function to show word and definition when game is over
     showDefinition: function () {
       definitionId.text(game.word.toUpperCase() + ": " + game.definition);
     },
+    // Function to update stats when game is over
     updateStats: function (outcome, id) {
-      game.fn.showDefinition();
+      // Increase either wins or losses count
       game[outcome] += 1;
+      // Increase games played count
       game.played += 1;
+      // Update text on site
       id.text(game[outcome]);
       playedId.text(game.played);
     },
+    // Function to reset game when new game button is clicked
     gameReset: function () {
+      // Empty puzzle, definition, and incorrect guesses containers
       wordId.empty();
       definitionId.empty();
       incorrectId.empty();
+      // Re-hide any visible parts of the equation.
       dataShowAttr.css("visibility", "hidden");
+      // Reset counts and arrays used to track game progress
       game.letterCount = 0;
       game.matched = [];
       game.matchedCount = 0;
@@ -191,19 +227,29 @@ let game = {
   }
 };
 
+// Get and display total number of puzzles
 puzzlesId.text(game.puzzles);
 
+// Function to generate the random value used to select the next puzzle
 let randomNumber = function (number) {
   return Math.floor(Math.random() * number);
 };
 
+// On click event to start a new game
 startBtn.on('click', function () {
+  // Reset game over to false
   game.gameOver = false;
+  // Get random value based on the number of puzzles left
   let i = randomNumber(game.terms.length);
+  // Get and assign word and definition to the game object
   game.word = game.terms[i][0];
   game.definition = game.terms[i][1];
+  // Remove puzzle from object array
   game.terms.splice(i, 1);
+  // Call function to reset game
   game.fn.gameReset();
+  // Call function to generate the puzzle's letter blocks
   game.fn.letterBlocks(game.word);
+  // Call function to bind keypress event to body element
   game.fn.keyPress();
 });

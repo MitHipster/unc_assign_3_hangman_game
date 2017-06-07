@@ -2,6 +2,7 @@
 /*global window, console, $, jQuery, this, alert*/
 
 const wordId = $('#word');
+const definitionId = $('#definition');
 const incorrectId = $('#incorrect');
 const letterCl = $('.letter');
 const matchedCl = $('.matched');
@@ -52,7 +53,7 @@ const mathTerms = [
   ["improper fraction", "A fraction whose numerator is the same as or larger than the denominator."],
   ["infinite", "Having no end or limits. Larger than any quantified concept. For many purposes it may be considered as the reciprocal of zero."],
   ["integer", "Any whole number: positive, negative, or zero."],
-  ["intersection", "The intersection of two sets is a set of elements found in both sets."],
+  ["intersection", "The intersection of two sets is a group of elements found in both sets."],
   ["inverse function", "A function which 'does the reverse' of a given function."],
   ["iteration", "Repeatedly performing the same sequence of steps."],
   ["linear", "A model or function where the input and output are proportional."],
@@ -96,7 +97,7 @@ let game = {
   terms: mathTerms,
   word: "",
   definition: "",
-  letters: [],
+  letters: [], 
   letterCount: 0,
   matched: [],
   matchedCount: 0,
@@ -166,7 +167,11 @@ let game = {
         game.fn.updateStats('losses', lossesId);
       }
     },
+    showDefinition: function () {
+      definitionId.text(game.word.toUpperCase() + ": " + game.definition);
+    },
     updateStats: function (outcome, id) {
+      game.fn.showDefinition();
       game[outcome] += 1;
       game.played += 1;
       id.text(game[outcome]);
@@ -174,6 +179,7 @@ let game = {
     },
     gameReset: function () {
       wordId.empty();
+      definitionId.empty();
       incorrectId.empty();
       dataShowAttr.css("visibility", "hidden");
       game.letterCount = 0;

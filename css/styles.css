@@ -24,7 +24,7 @@ body {
   letter-spacing: 0.2rem;
   line-height: 1.4;
   color: #d6d6d6;
-  background: url("../img/chalkboard.jpg") no-repeat 81% 100%;
+  background: url("../img/chalkboard.jpg") no-repeat center;
   background-size: cover;
   background-color: #333;
 }
@@ -50,7 +50,7 @@ span {
 small {
   display: block;
   font-size: 0.875rem;
-  margin: -10px 0 10px;
+  margin: -2.5px 0 5px;
 }
 
 svg {
@@ -96,7 +96,12 @@ svg {
 .word-container p:first-child,
 .incorrect-container p:first-child,
 .equation-container p:first-child {
-  margin: 0.5rem auto;
+  margin: 0.5rem auto 0;
+}
+
+.definition-container {
+  line-height: 1.125;
+  font-size: 1.125rem;
 }
 
 /* Page Elements */
@@ -104,7 +109,7 @@ svg {
 #word,
 #incorrect,
 #equation {
-  min-height: 3rem;
+  min-height: 2.5rem;
 }
 
 .letter {
@@ -141,9 +146,10 @@ svg {
 #start-btn {
   font-family: 'dk_crayon_crumbleregular', sans-serif;
   font-size: 1.25rem;
-  letter-spacing: 0.2rem;
+  letter-spacing: 0.1rem;
   color: #d6d6d6;
   background-color: rgba(214, 214, 214, 0.15);
+  margin-top: 10px;
   padding: 5px 10px;
   border: none;
 }
@@ -176,6 +182,11 @@ svg {
   
   .game-container {
     padding: 1rem 1.5rem;
+  }
+  
+  .definition-container {
+    line-height: 1.25;
+    font-size: 1.25rem;
   }
   
   .letter {
@@ -223,6 +234,11 @@ svg {
   .game-info {
     min-height: 5rem;
     margin-top: 1rem;
+  }
+  
+  .definition-container {
+    line-height: 1.375;
+    font-size: 1.375rem;
   }
   
   .letter {
